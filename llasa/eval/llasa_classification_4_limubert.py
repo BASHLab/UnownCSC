@@ -31,7 +31,7 @@ torch.backends.cudnn.benchmark = False
 PER_CLASS_SAMPLES = 10
 
 
-with open("/home/simran/limuBERT_data/dataset_activity_label.json","r") as f:
+with open("/home/epoudel/STAMP/UnownCSC/llasa/data/dataset_activity_label.json","r") as f:
     dataset_activity_label_dict = json.load(f)
 
 unique_classes = set()
@@ -51,7 +51,7 @@ unique_classes_dict[UNCLEAR_LABEL] = idx+1
 print(unique_classes_dict)
 
 
-root_data_dir = "/home/simran/limuBERT_data/extracted_data"
+root_data_dir = "/home/epoudel/STAMP/UnownCSC/llasa/data"
 datasets = sorted(os.listdir(root_data_dir))
 
 data_file_name = "data_20_120.npy"
@@ -62,9 +62,12 @@ last_axis_dict = {
 }
 
 
-model_path = "/home/simran/LLaVA/checkpoints7/llava-v1.5-13b-llasa2-limu4"
+
+
+model_path = "/home/epoudel/STAMP/UnownCSC/llasa/llava-v1.5-13b-llasa2-lr3e-5-mmlr1e-4-e1-r8-a8-lora"
+# model_path = "/home/simran/LLaVA/checkpoints7/llava-v1.5-13b-llasa2-limu4"
 # model_path = "/home/simran/LLaVA/checkpoints7/llava-v1.5-13b-llasa2-limu4-lr3e-5-mmlr1e-4-e1-r8-a8-proj1-lora"
-# model_path = "/home/simran/LLaVA/checkpoints/llava-v1.5-13b-llasa_v1"
+# model_path = "/home/simran/LLaqA/checkpoints/llava-v1.5-13b-llasa_v1"
 # model_path = "/home/simran/LLaVA/checkpoints/llava-v1.5-13b-llasa2-lr3e-5-mmlr1e-4-e1-r128-a128-lora"
 # model_path = "/hdd/shouborno/llava-experiment/LLaVA/checkpoints/llava-v1.5-13b-llasa_v1"
 # model_path = "/home/simran/llava_llasa_first_test_model"
@@ -86,7 +89,7 @@ prompt = (
 # image_file = "/home/simran/limuBERT_data/train_llasa/images/sensor_image_20000_1.npy"
 
 
-result_f = open("/home/simran/SLU/results/llasa_limubertdatasets_deterministic_13b.txt","w")
+result_f = open("/home/epoudel/STAMP/UnownCSC/llasa/results/llasa_baseline.txt","w")
 # sample_indices = [5, 9, 12, 1199, 2000]
 
 for dataset in datasets:
@@ -105,7 +108,7 @@ for dataset in datasets:
     for idx in tqdm(range(len(data))):
         sample_index = random.randint(0, len(data))
         # sample_index = idx
-        image_file = f"/home/simran/limuBERT_data/train_llasa/images/{dataset}/sensor_image_{sample_index}.npy"
+        image_file = f"/home/epoudel/STAMP/UnownCSC/llasa/embeddings/baseline/{dataset}/sensor_image_{sample_index}.npy"
         if not os.path.exists(image_file):
             continue
         
@@ -117,7 +120,8 @@ for dataset in datasets:
         result_f.write(image_file+"\n")
         args = type('Args', (), {
             "model_path": model_path,
-            "model_base": None,
+            #"model_base": None,
+            "model_base": "/home/epoudel/STAMP/UnownCSC/llasa/weights/base_model",
             # "model_base": "lmsys/vicuna-13b-v1.5-16K",
             "model_name": get_model_name_from_path(model_path),
             "query": prompt,
@@ -176,4 +180,4 @@ for dataset in datasets:
         xticks_rotation='vertical'
     )
     plt.tight_layout()
-    plt.savefig("/home/simran/SLU/results/13b_"+dataset+"_cm.png", pad_inches=5)
+    plt.savefig("/home/epoudel/STAMP/UnownCSC/llasa/results/13b_"+dataset+"_cm.png", pad_inches=5)
